@@ -29,16 +29,7 @@ header h1 {
 }
 
 main {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
-}
-
-@media (min-width: 768px) {
-  main {
-    grid-template-columns: 2fr 1fr;
-  }
+  width: 100%;
 }
 
 section {
@@ -47,7 +38,6 @@ section {
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
 }
 
 section h3 {
@@ -57,12 +47,39 @@ section h3 {
   color: #1a237e;
 }
 
+#activities-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+/* Tablet and larger screens */
+@media (min-width: 768px) {
+  #activities-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop screens */
+@media (min-width: 1024px) {
+  #activities-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .activity-card {
-  margin-bottom: 15px;
-  padding: 15px;
+  padding: 20px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 8px;
   background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.activity-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .activity-card h4 {
@@ -149,6 +166,79 @@ section h3 {
   font-size: 16px;
 }
 
+/* Register section on cards */
+.register-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.register-section h5 {
+  margin-bottom: 10px;
+  color: #1a237e;
+  font-size: 14px;
+}
+
+.register-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.register-form input[type="email"] {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.register-btn {
+  background-color: #1a237e;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.register-btn:hover {
+  background-color: #3949ab;
+}
+
+.register-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Availability indicator */
+.availability {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.availability.available {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.availability.limited {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.availability.full {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
 button {
   background-color: #1a237e;
   color: white;
@@ -164,25 +254,28 @@ button:hover {
   background-color: #3949ab;
 }
 
-.message {
-  margin-top: 20px;
-  padding: 10px;
+#message {
+  margin: 20px auto;
+  padding: 15px;
   border-radius: 4px;
+  max-width: 600px;
+  text-align: center;
+  font-weight: bold;
 }
 
-.success {
+#message.success {
   background-color: #e8f5e9;
   color: #2e7d32;
   border: 1px solid #a5d6a7;
 }
 
-.error {
+#message.error {
   background-color: #ffebee;
   color: #c62828;
   border: 1px solid #ef9a9a;
 }
 
-.info {
+#message.info {
   background-color: #d1ecf1;
   color: #0c5460;
   border: 1px solid #bee5eb;

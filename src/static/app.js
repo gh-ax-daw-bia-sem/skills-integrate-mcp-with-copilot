@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   const activitiesList = document.getElementById("activities-list");
-  const activitySelect = document.getElementById("activity");
-  const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
 
   // Function to fetch activities from API
@@ -20,6 +18,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft =
           details.max_participants - details.participants.length;
+
+        // Determine availability status
+        let availabilityClass = "available";
+        let availabilityText = `${spotsLeft} spots left`;
+        if (spotsLeft === 0) {
+          availabilityClass = "full";
+          availabilityText = "Full";
+        } else if (spotsLeft <= 3) {
+          availabilityClass = "limited";
+          availabilityText = `Only ${spotsLeft} spots left!`;
+        }
 
         // Create participants HTML with delete icons instead of bullet points
         const participantsHTML =
@@ -41,24 +50,34 @@ document.addEventListener("DOMContentLoaded", () => {
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          <p><strong>Availability:</strong> <span class="availability ${availabilityClass}">${availabilityText}</span></p>
           <div class="participants-container">
             ${participantsHTML}
+          </div>
+          <div class="register-section">
+            <h5>Register for this activity:</h5>
+            <form class="register-form" data-activity="${name}">
+              <input type="email" placeholder="your-email@mergington.edu" required ${
+                spotsLeft === 0 ? "disabled" : ""
+              }>
+              <button type="submit" class="register-btn" ${
+                spotsLeft === 0 ? "disabled" : ""
+              }>Register</button>
+            </form>
           </div>
         `;
 
         activitiesList.appendChild(activityCard);
-
-        // Add option to select dropdown
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        activitySelect.appendChild(option);
       });
 
       // Add event listeners to delete buttons
       document.querySelectorAll(".delete-btn").forEach((button) => {
         button.addEventListener("click", handleUnregister);
+      });
+
+      // Add event listeners to register forms
+      document.querySelectorAll(".register-form").forEach((form) => {
+        form.addEventListener("submit", handleRegister);
       });
     } catch (error) {
       activitiesList.innerHTML =
@@ -110,12 +129,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Handle form submission
-  signupForm.addEventListener("submit", async (event) => {
+  // Handle registration from card forms
+  async function handleRegister(event) {
     event.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const activity = document.getElementById("activity").value;
+    const form = event.target;
+    const activity = form.getAttribute("data-activity");
+    const emailInput = form.querySelector('input[type="email"]');
+    const email = emailInput.value;
 
     try {
       const response = await fetch(
@@ -132,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
-        signupForm.reset();
+        form.reset();
 
         // Refresh activities list to show updated participants
         fetchActivities();
@@ -153,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       messageDiv.classList.remove("hidden");
       console.error("Error signing up:", error);
     }
-  });
+  }
 
   // Initialize app
   fetchActivities();
